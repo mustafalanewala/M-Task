@@ -6,7 +6,9 @@ import { setUser, clearUser } from './redux/userSlice';
 import { auth } from './firebase/firebaseConfig';
 import Login from './components/Auth/Login';
 import Logout from './components/Auth/Logout';
-import Dashboard from './pages/Dashboard'; 
+import Dashboard from './pages/Dashboard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -40,6 +42,7 @@ const App = () => {
             ) : (
                 <Login />
             )}
+            <ToastContainer /> 
         </div>
     );
 };

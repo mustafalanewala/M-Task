@@ -32,3 +32,9 @@ export const deleteTask = async (id) => {
     const taskDoc = doc(db, 'tasks', id);
     await deleteDoc(taskDoc);
 };
+
+// Function to update a task's completion status
+export const updateTaskStatus = async (id, status) => {
+    const taskDoc = doc(db, 'tasks', id);
+    await updateDoc(taskDoc, { status }); 
+};
