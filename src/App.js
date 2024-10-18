@@ -35,7 +35,7 @@ const App = () => {
                 <div>
                     <h1>Welcome, {user.displayName}</h1>
                     <Logout />
-                    <Dashboard /> {/* Render your dashboard or task page here */}
+                    <Dashboard />
                 </div>
             ) : (
                 <Login />
