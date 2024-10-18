@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+## **1. Project Overview**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Project Name:** MTask
 
-## Available Scripts
+**Description:**  
+MTask is a task management application where users can sign up/log in using OAuth, create and manage tasks, categorize them as completed, pending, or failed, and perform various actions like deleting tasks. This app will use React with Redux for state management, Node.js and Express for the backend, Firebase as the database, and Vercel for hosting.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## **2. Technology Stack**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### **Frontend:**
+- **Framework:** React.js
+- **State Management:** Redux (with Redux Toolkit)
+- **Routing:** React Router
+- **UI Library:** Material-UI or Tailwind CSS
+- **Authentication:** OAuth (using Google or other providers)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### **Backend:**
+- **Framework:** Node.js with Express.js
+- **Database:** Firebase Firestore (NoSQL)
+- **Authentication:** Firebase Authentication with OAuth providers
 
-### `npm test`
+### **Hosting:**
+- **Frontend & Backend Hosting:** Vercel
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## **3. Authentication with OAuth**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### **Steps:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Set Up OAuth Provider:**
+   - Configure OAuth on Firebase for Google or other third-party providers.
+   - Obtain OAuth credentials (Client ID and Client Secret).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **OAuth Flow in React:**
+   - Use Firebase Authentication to integrate OAuth.
+   - Use Firebase SDK for handling login and token management.
+   - Store the JWT token securely (Redux state for temporary token storage).
 
-### `npm run eject`
+3. **Redirecting User Post-Login:**
+   - On successful OAuth login, redirect the user to the task management dashboard.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## **4. Backend (Node.js + Express)**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Set Up Express Server:**
+   - Handle API routes for managing tasks (CRUD operations).
+   - Ensure authentication middleware to protect routes.
+   
+2. **Connect to Firebase Firestore:**
+   - Use Firebase Admin SDK on the server to interact with Firestore for storing and retrieving tasks.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. **API Endpoints:**
+   - **POST /tasks:** Create a new task.
+   - **GET /tasks:** Get all tasks for the authenticated user.
+   - **PUT /tasks/:id:** Update a specific task.
+   - **DELETE /tasks/:id:** Delete a task.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## **5. State Management with Redux**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Actions and Reducers:**
+   - Set up Redux slices for managing user authentication state and task-related data.
+   - Actions like `fetchTasks`, `addTask`, `updateTask`, `deleteTask`, and `setUser` for managing state.
 
-### Code Splitting
+2. **Thunk for Async Operations:**
+   - Use Redux Thunk for handling asynchronous calls to Firebase via the backend API (e.g., fetching tasks, creating tasks).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## **6. Task Management Features**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Create Task:** 
+   - A form where users can add a new task (title, description, due date).
+   
+2. **View Tasks:**
+   - Display all tasks, filter by status (pending, completed, failed).
+   
+3. **Edit/Update Task:**
+   - Allow users to update task details.
 
-### Making a Progressive Web App
+4. **Delete Task:**
+   - Provide a button to delete tasks from Firebase.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+5. **Task Status:**
+   - Mark tasks as completed, failed, or pending.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **7. Hosting and Deployment**
 
-### Deployment
+### **Steps:**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. **Frontend on Vercel:**
+   - Deploy the React app to Vercel with automatic integration from your GitHub repository.
+   - Configure environment variables for OAuth credentials and Firebase settings.
 
-### `npm run build` fails to minify
+2. **Backend on Vercel:**
+   - Deploy the Node.js + Express backend as a Vercel serverless function.
+   - Ensure proper API routes are configured.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
