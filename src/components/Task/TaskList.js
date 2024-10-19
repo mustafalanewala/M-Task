@@ -13,7 +13,7 @@ import {
 import TaskEditForm from "./TaskEditForm";
 import TaskForm from "./TaskForm";
 import { toast } from "react-toastify";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiEdit, FiTrash } from "react-icons/fi";
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -156,7 +156,7 @@ const TaskList = () => {
                   : task.status === "failed"
                   ? "bg-red-100"
                   : "bg-yellow-100"
-              } shadow`}
+              } shadow relative`}
             >
               <h3 className="text-lg font-semibold">{task.name}</h3>
               <p>{task.description}</p>
@@ -166,30 +166,34 @@ const TaskList = () => {
               <p>
                 <strong>Due Date:</strong> {task.dueDate}
               </p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleComplete(task)}
-                  className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-700 transition duration-200"
-                >
-                  Complete
-                </button>
-                <button
-                  onClick={() => handleFail(task)}
-                  className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-700 transition duration-200"
-                >
-                  Fail
-                </button>
+
+              <div className="absolute top-2 right-2 space-x-2 flex">
                 <button
                   onClick={() => handleEdit(task)}
-                  className="bg-yellow-500 text-white py-1 px-2 rounded hover:bg-yellow-700 transition duration-200"
+                  className="text-yellow-600 hover:text-yellow-800"
                 >
-                  Edit
+                  <FiEdit size={20} />
                 </button>
                 <button
                   onClick={() => handleDelete(task.id)}
-                  className="bg-gray-500 text-white py-1 px-2 rounded hover:bg-gray-700 transition duration-200"
+                  className="text-gray-600 hover:text-gray-800"
                 >
-                  Delete
+                  <FiTrash size={20} />
+                </button>
+              </div>
+
+              <div className="flex space-x-2 mt-2 text-sm font-semibold">
+                <button
+                  onClick={() => handleComplete(task)}
+                  className="flex-1 bg-green-500 text-white p-2 rounded hover:bg-green-700 transition duration-200"
+                >
+                  Mark as Completed
+                </button>
+                <button
+                  onClick={() => handleFail(task)}
+                  className="flex-1 bg-red-500 text-white p-2 rounded hover:bg-red-700 transition duration-200"
+                >
+                  Mark as Failed
                 </button>
               </div>
             </div>
