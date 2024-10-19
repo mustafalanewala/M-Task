@@ -1,11 +1,9 @@
-// src/App.js
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setUser, clearUser } from './redux/userSlice';
 import { auth } from './firebase/firebaseConfig';
 import Login from './components/Auth/Login';
-import Logout from './components/Auth/Logout';
 import Dashboard from './pages/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,17 +29,12 @@ const App = () => {
     }, [dispatch]);
 
     return (
-        <div className="App p-4">
+        <div className="App">
             {user ? (
-                <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-2xl font-bold">Hello, {user.displayName}</h1>
-                    <Logout />
-                </div>
+                <Dashboard />
             ) : (
                 <Login />
             )}
-            {/* Only show Dashboard if user is authenticated */}
-            {user && <Dashboard />}
             <ToastContainer /> 
         </div>
     );

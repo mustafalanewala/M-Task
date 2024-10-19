@@ -13,6 +13,7 @@ import {
 import TaskEditForm from "./TaskEditForm";
 import TaskForm from "./TaskForm";
 import { toast } from "react-toastify";
+import { FiPlus } from "react-icons/fi";
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -82,14 +83,24 @@ const TaskList = () => {
 
   // Count tasks
   const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(task => task.status === "completed").length;
-  const failedTasks = tasks.filter(task => task.status === "failed").length;
+  const completedTasks = tasks.filter(
+    (task) => task.status === "completed"
+  ).length;
+  const failedTasks = tasks.filter((task) => task.status === "failed").length;
   const pendingTasks = totalTasks - (completedTasks + failedTasks);
 
   return (
     <div className="task-list">
-      <h2 className="text-2xl font-bold mb-4">Task Dashboard</h2>
-
+      <div className="flex justify-between mb-6">
+        <h2 className="text-2xl font-bold p-1">Task Dashboard</h2>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="bg-green-500 text-white px-6 rounded flex items-center"
+        >
+          <FiPlus className="mr-2" />
+          New Task
+        </button>
+      </div>
       {/* Task Summary Section */}
       <div className="grid grid-cols-4 gap-4 mb-4">
         <div className="bg-blue-200 p-4 rounded shadow">
@@ -129,12 +140,6 @@ const TaskList = () => {
             <option value="asc">Sort A-Z</option>
             <option value="desc">Sort Z-A</option>
           </select>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200"
-          >
-            Add New Task
-          </button>
         </div>
       </div>
 
