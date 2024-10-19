@@ -21,7 +21,6 @@ const App = () => {
                     uid: user.uid,
                     displayName: user.displayName,
                     email: user.email,
-                    photoURL: user.photoURL,
                 }));
             } else {
                 dispatch(clearUser());
@@ -32,16 +31,17 @@ const App = () => {
     }, [dispatch]);
 
     return (
-        <div className="App">
+        <div className="App p-4">
             {user ? (
-                <div>
-                    <h1>Welcome, {user.displayName}</h1>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-2xl font-bold">Hello, {user.displayName}</h1>
                     <Logout />
-                    <Dashboard />
                 </div>
             ) : (
                 <Login />
             )}
+            {/* Only show Dashboard if user is authenticated */}
+            {user && <Dashboard />}
             <ToastContainer /> 
         </div>
     );

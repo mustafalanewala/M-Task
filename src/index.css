@@ -1,63 +1,17 @@
-/* src/index.css */
-.loading-spinner {
-    font-size: 20px;
-    text-align: center;
-    margin: 20px 0;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.task-completed {
-    text-decoration: line-through;
-    color: green;
-}
 
-.task-failed {
-    color: red;
-}
-
-.btn-complete-task,
-.btn-fail-task,
-.btn-edit-task,
-.btn-delete-task {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.btn-complete-task {
-    background-color: #4caf50; /* Green */
-    color: white;
-}
-
-.btn-fail-task {
-    background-color: #f44336; /* Red */
-    color: white;
-}
-
-.btn-edit-task {
-    background-color: #2196F3; /* Blue */
-    color: white;
-}
-
-.btn-delete-task {
-    background-color: #ff9800; /* Orange */
-    color: white;
-}
-
-.btn-complete-task:hover {
-    background-color: #45a049;
-}
-
-.btn-fail-task:hover {
-    background-color: #d32f2f;
-}
-
-.btn-edit-task:hover {
-    background-color: #1976D2;
-}
-
-.btn-delete-task:hover {
-    background-color: #fb8c00;
-}
+@media (max-width: 768px) {
+    .task-list .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .task-list .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
