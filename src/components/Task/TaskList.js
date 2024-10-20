@@ -1,6 +1,7 @@
+// src/components/TaskList.js
 import React, { useEffect, useState } from "react";
 import {
-  fetchTasks,
+  fetchUserTasks,
   deleteTask as deleteTaskService,
   updateTaskStatus,
 } from "../../firebase/taskService";
@@ -14,6 +15,7 @@ import TaskEditForm from "./TaskEditForm";
 import TaskForm from "./TaskForm";
 import { toast } from "react-toastify";
 import { FiPlus, FiEdit, FiTrash } from "react-icons/fi";
+import { auth } from "../../firebase/firebaseConfig"; // Make sure to import auth
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -27,39 +29,62 @@ const TaskList = () => {
 
   useEffect(() => {
     const loadTasks = async () => {
-      setLoading(true);
-      const tasksFromDb = await fetchTasks();
-      dispatch(setTasks(tasksFromDb));
-      setLoading(false);
+      if (auth.currentUser) {
+        setLoading(true);
+        const tasksFromDb = await fetchUserTasks(auth.currentUser.uid); // Fetch user-specific tasks
+        dispatch(setTasks(tasksFromDb));
+        setLoading(false);
+      }
     };
 
     loadTasks();
   }, [dispatch]);
 
   const handleDelete = async (id) => {
+    const userId = auth.currentUser.uid; // Get the authenticated user ID
     setLoading(true);
-    await deleteTaskService(id);
-    dispatch(deleteTask(id));
-    toast.success("Task deleted successfully!");
-    setLoading(false);
+    try {
+      await deleteTaskService(userId, id); // Pass the user ID and task ID
+      dispatch(deleteTask(id));
+      toast.success("Task deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleComplete = async (task) => {
     setLoading(true);
-    await updateTaskStatus(task.id, "completed");
-    const updatedTask = { ...task, status: "completed" };
-    dispatch(updateTaskAction(updatedTask));
-    toast.success("Task marked as completed!");
-    setLoading(false);
+    const userId = auth.currentUser.uid; // Get userId from the authenticated user
+    try {
+      await updateTaskStatus(userId, task.id, "completed"); // Pass userId
+      const updatedTask = { ...task, status: "completed" };
+      dispatch(updateTaskAction(updatedTask));
+      toast.success("Task marked as completed!");
+    } catch (error) {
+      console.error("Error marking task as completed:", error);
+      toast.error("Failed to mark task as completed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFail = async (task) => {
     setLoading(true);
-    await updateTaskStatus(task.id, "failed");
-    const updatedTask = { ...task, status: "failed" };
-    dispatch(updateTaskAction(updatedTask));
-    toast.error("Task marked as failed!");
-    setLoading(false);
+    const userId = auth.currentUser.uid; // Get userId from the authenticated user
+    try {
+      await updateTaskStatus(userId, task.id, "failed"); // Pass userId
+      const updatedTask = { ...task, status: "failed" };
+      dispatch(updateTaskAction(updatedTask));
+      toast.error("Task marked as failed!");
+    } catch (error) {
+      console.error("Error marking task as failed:", error);
+      toast.error("Failed to mark task as failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEdit = (task) => {

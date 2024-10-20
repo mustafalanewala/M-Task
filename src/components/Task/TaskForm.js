@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { addTask } from '../../firebase/taskService';
 import { useDispatch } from 'react-redux';
 import { addTask as addTaskAction } from '../../redux/tasksSlice';
+import { useAuthState } from "react-firebase-hooks/auth"; // Correct import for useAuthState
+import { auth } from '../../firebase/firebaseConfig'; // Import your auth configuration
+import { toast } from 'react-toastify'; // Optional: for notifications
 
 const TaskForm = ({ onClose }) => { // Accept onClose prop
     const [taskName, setTaskName] = useState('');
@@ -10,6 +13,7 @@ const TaskForm = ({ onClose }) => { // Accept onClose prop
     const [category, setCategory] = useState('');
     const [dueDate, setDueDate] = useState('');
     const dispatch = useDispatch();
+    const [user] = useAuthState(auth); // Get the current user
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,14 +22,27 @@ const TaskForm = ({ onClose }) => { // Accept onClose prop
             description: description,
             category: category,
             dueDate: dueDate,
-            completed: false
+            completed: false,
         };
+
         try {
-            const taskId = await addTask(newTask);
-            dispatch(addTaskAction({ id: taskId, ...newTask }));
-            onClose(); // Close modal after adding task
+            if (user) { // Check if the user is authenticated
+                const taskId = await addTask(user.uid, newTask); // Pass user ID
+                dispatch(addTaskAction({ id: taskId, ...newTask }));
+                toast.success("Task added successfully!"); // Notify success
+                onClose(); // Close modal after adding task
+                // Clear form fields
+                setTaskName('');
+                setDescription('');
+                setCategory('');
+                setDueDate('');
+            } else {
+                console.error('User is not authenticated');
+                toast.error("You need to be logged in to add a task."); // Notify error
+            }
         } catch (error) {
             console.error('Error adding task:', error);
+            toast.error("Failed to add task: " + error.message); // Notify error
         }
     };
 

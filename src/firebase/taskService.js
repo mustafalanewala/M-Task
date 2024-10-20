@@ -1,40 +1,34 @@
 // src/firebase/taskService.js
 import { db } from './firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, getDocs, deleteDoc } from 'firebase/firestore'; // Added deleteDoc
 
-// Function to add a new task
-export const addTask = async (task) => {
-    try {
-        const docRef = await addDoc(collection(db, 'tasks'), task);
-        return { id: docRef.id, ...task };
-    } catch (error) {
-        console.error("Error adding task:", error);
-        throw error;
-    }
+// Fetch user tasks
+export const fetchUserTasks = async (userId) => {
+    const tasksCollection = collection(db, `users/${userId}/tasks`);
+    const tasksSnapshot = await getDocs(tasksCollection);
+    return tasksSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
-// Function to fetch all tasks
-export const fetchTasks = async () => {
-    const tasksCol = collection(db, 'tasks');
-    const taskSnapshot = await getDocs(tasksCol);
-    const taskList = taskSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    return taskList;
+// Add task
+export const addTask = async (userId, task) => {
+    const tasksCollection = collection(db, `users/${userId}/tasks`);
+    await addDoc(tasksCollection, task);
 };
 
-// Function to update a task
-export const updateTask = async (id, updatedTask) => {
-    const taskDoc = doc(db, 'tasks', id);
+// Update task
+export const updateTask = async (userId, id, updatedTask) => {
+    const taskDoc = doc(db, `users/${userId}/tasks`, id);
     await updateDoc(taskDoc, updatedTask);
 };
 
-// Function to delete a task
-export const deleteTask = async (id) => {
-    const taskDoc = doc(db, 'tasks', id);
+// Delete task
+export const deleteTask = async (userId, id) => {
+    const taskDoc = doc(db, `users/${userId}/tasks`, id);
     await deleteDoc(taskDoc);
 };
 
-// Function to update a task's completion status
-export const updateTaskStatus = async (id, status) => {
-    const taskDoc = doc(db, 'tasks', id);
-    await updateDoc(taskDoc, { status }); 
+// Update task status
+export const updateTaskStatus = async (userId, id, status) => {
+    const taskDoc = doc(db, `users/${userId}/tasks`, id);
+    await updateDoc(taskDoc, { status });
 };

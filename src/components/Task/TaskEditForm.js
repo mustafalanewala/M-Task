@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { updateTask } from '../../firebase/taskService';
 import { useDispatch } from 'react-redux';
 import { updateTask as updateTaskAction } from '../../redux/tasksSlice';
+import { auth } from '../../firebase/firebaseConfig'; // Import auth
+import { toast } from 'react-toastify'; // Import toast
 
 const TaskEditForm = ({ task, onClose }) => {
     const [taskName, setTaskName] = useState('');
@@ -22,6 +24,7 @@ const TaskEditForm = ({ task, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const userId = auth.currentUser.uid; // Ensure userId is available
         const updatedTask = {
             id: task.id,
             name: taskName,
@@ -30,12 +33,14 @@ const TaskEditForm = ({ task, onClose }) => {
             dueDate: dueDate,
             status: task.status, // Preserving the current status
         };
+        console.log('Updated Task:', updatedTask); // Debugging log
         try {
-            await updateTask(task.id, updatedTask);
+            await updateTask(userId, task.id, updatedTask); // Pass userId
             dispatch(updateTaskAction(updatedTask)); // Update Redux state
             onClose(); // Close the modal after updating
         } catch (error) {
-            console.error('Error updating task:', error);
+            console.error('Error updating task:', error.message); // More informative log
+            toast.error('Failed to update task: ' + error.message); // Notify the user
         }
     };
 
