@@ -3,7 +3,7 @@
 **Project Name:** MTask
 
 **Description:**  
-MTask is a task management application where users can sign up/log in using OAuth, create and manage tasks, categorize them as completed, pending, or failed, and perform various actions like deleting tasks. This app will use React with Redux for state management, Node.js and Express for the backend, Firebase as the database, and Vercel for hosting.
+MTask is a powerful task management application that allows users to seamlessly sign up and log in using Google OAuth. Users can create, manage, and categorize their tasks as completed, pending, or failed. With features like task editing, deletion, and an intuitive interface, MTask helps individuals stay organized and productive.
 
 ---
 
