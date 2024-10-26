@@ -1,4 +1,4 @@
-// src/components/TaskList.js
+// src/components/Task/TaskList.js
 import React, { useEffect, useState } from "react";
 import {
   fetchUserTasks,
@@ -15,7 +15,7 @@ import TaskEditForm from "./TaskEditForm";
 import TaskForm from "./TaskForm";
 import { toast } from "react-toastify";
 import { FiPlus, FiEdit, FiTrash } from "react-icons/fi";
-import { auth } from "../../firebase/firebaseConfig"; // Make sure to import auth
+import { auth } from "../../firebase/firebaseConfig";
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -31,20 +31,19 @@ const TaskList = () => {
     const loadTasks = async () => {
       if (auth.currentUser) {
         setLoading(true);
-        const tasksFromDb = await fetchUserTasks(auth.currentUser.uid); // Fetch user-specific tasks
+        const tasksFromDb = await fetchUserTasks(auth.currentUser.uid);
         dispatch(setTasks(tasksFromDb));
         setLoading(false);
       }
     };
-
     loadTasks();
   }, [dispatch]);
 
   const handleDelete = async (id) => {
-    const userId = auth.currentUser.uid; // Get the authenticated user ID
+    const userId = auth.currentUser.uid;
     setLoading(true);
     try {
-      await deleteTaskService(userId, id); // Pass the user ID and task ID
+      await deleteTaskService(userId, id);
       dispatch(deleteTask(id));
       toast.success("Task deleted successfully!");
     } catch (error) {
@@ -57,9 +56,9 @@ const TaskList = () => {
 
   const handleComplete = async (task) => {
     setLoading(true);
-    const userId = auth.currentUser.uid; // Get userId from the authenticated user
+    const userId = auth.currentUser.uid;
     try {
-      await updateTaskStatus(userId, task.id, "completed"); // Pass userId
+      await updateTaskStatus(userId, task.id, "completed");
       const updatedTask = { ...task, status: "completed" };
       dispatch(updateTaskAction(updatedTask));
       toast.success("Task marked as completed!");
@@ -73,9 +72,9 @@ const TaskList = () => {
 
   const handleFail = async (task) => {
     setLoading(true);
-    const userId = auth.currentUser.uid; // Get userId from the authenticated user
+    const userId = auth.currentUser.uid;
     try {
-      await updateTaskStatus(userId, task.id, "failed"); // Pass userId
+      await updateTaskStatus(userId, task.id, "failed");
       const updatedTask = { ...task, status: "failed" };
       dispatch(updateTaskAction(updatedTask));
       toast.error("Task marked as failed!");
@@ -99,14 +98,11 @@ const TaskList = () => {
   });
 
   const sortedTasks = filteredTasks.sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a.name.localeCompare(b.name);
-    } else {
-      return b.name.localeCompare(a.name);
-    }
+    return sortOrder === "asc"
+      ? a.name.localeCompare(b.name)
+      : b.name.localeCompare(a.name);
   });
 
-  // Count tasks
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(
     (task) => task.status === "completed"
@@ -116,37 +112,37 @@ const TaskList = () => {
 
   return (
     <div className="task-list">
-      <div className="flex justify-between mb-6">
-        <h2 className="text-2xl font-bold p-1">Task Dashboard</h2>
+      <div className="flex flex-row sm:flex-row justify-between items-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold p-1">Task Dashboard</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-green-500 text-white px-6 rounded flex items-center"
+          className="mt-2 sm:mt-0 font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center"
         >
           <FiPlus className="mr-2" />
           New Task
         </button>
       </div>
-      {/* Task Summary Section */}
-      <div className="grid grid-cols-4 gap-4 mb-4">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className="bg-blue-200 p-4 rounded shadow">
-          <h3 className="font-semibold">Total Tasks</h3>
-          <p className="text-2xl">{totalTasks}</p>
+          <h3 className="text-xl font-semibold">Total Tasks</h3>
+          <p className="text-3xl font-bold text-gray-800">{totalTasks}</p>
         </div>
         <div className="bg-green-200 p-4 rounded shadow">
-          <h3 className="font-semibold">Completed Tasks</h3>
-          <p className="text-2xl">{completedTasks}</p>
+          <h3 className="text-xl font-semibold">Completed Tasks</h3>
+          <p className="text-3xl font-bold text-gray-800">{completedTasks}</p>
         </div>
         <div className="bg-yellow-200 p-4 rounded shadow">
-          <h3 className="font-semibold">Pending Tasks</h3>
-          <p className="text-2xl">{pendingTasks}</p>
+          <h3 className="text-xl font-semibold">Pending Tasks</h3>
+          <p className="text-3xl font-bold text-gray-800">{pendingTasks}</p>
         </div>
         <div className="bg-red-200 p-4 rounded shadow">
-          <h3 className="font-semibold">Failed Tasks</h3>
-          <p className="text-2xl">{failedTasks}</p>
+          <h3 className="text-xl font-semibold">Failed Tasks</h3>
+          <p className="text-3xl font-bold text-gray-800">{failedTasks}</p>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
         <div className="filter-sort-controls space-x-4">
           <select
             onChange={(e) => setFilter(e.target.value)}
@@ -171,17 +167,17 @@ const TaskList = () => {
       {loading ? (
         <div className="loading-spinner">Loading tasks...</div>
       ) : (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {sortedTasks.map((task) => (
             <div
               key={task.id}
-              className={`p-4 border rounded mb-2 ${
+              className={`p-4 border rounded shadow mb-2 ${
                 task.status === "completed"
                   ? "bg-green-100"
                   : task.status === "failed"
                   ? "bg-red-100"
                   : "bg-yellow-100"
-              } shadow relative`}
+              } relative`}
             >
               <h3 className="text-lg font-semibold">{task.name}</h3>
               <p>{task.description}</p>
@@ -191,7 +187,6 @@ const TaskList = () => {
               <p>
                 <strong>Due Date:</strong> {task.dueDate}
               </p>
-
               <div className="absolute top-2 right-2 space-x-2 flex">
                 <button
                   onClick={() => handleEdit(task)}
@@ -206,7 +201,6 @@ const TaskList = () => {
                   <FiTrash size={20} />
                 </button>
               </div>
-
               <div className="flex space-x-2 mt-2 text-sm font-semibold">
                 <button
                   onClick={() => handleComplete(task)}
@@ -227,8 +221,8 @@ const TaskList = () => {
       )}
 
       {showEditModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="max-w-sm w-full sm:max-w-lg">
             <TaskEditForm
               task={editingTask}
               onClose={() => setShowEditModal(false)}
@@ -238,8 +232,8 @@ const TaskList = () => {
       )}
 
       {showAddModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="max-w-sm w-full sm:max-w-lg">
             <TaskForm onClose={() => setShowAddModal(false)} />
           </div>
         </div>

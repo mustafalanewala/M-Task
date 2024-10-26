@@ -1,6 +1,6 @@
 // src/firebase/taskService.js
 import { db } from './firebaseConfig';
-import { collection, addDoc, updateDoc, doc, getDocs, deleteDoc } from 'firebase/firestore'; // Added deleteDoc
+import { collection, addDoc, updateDoc, doc, getDocs, deleteDoc } from 'firebase/firestore';
 
 // Fetch user tasks
 export const fetchUserTasks = async (userId) => {
