@@ -1,4 +1,3 @@
-// src/components/Task/TaskEditForm.js
 import React, { useState, useEffect } from "react";
 import { updateTask } from "../../firebase/taskService";
 import { useDispatch } from "react-redux";
@@ -21,6 +20,8 @@ const TaskEditForm = ({ task, onClose }) => {
       setDueDate(task.dueDate);
     }
   }, [task]);
+
+  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,6 +91,7 @@ const TaskEditForm = ({ task, onClose }) => {
         <input
           type="date"
           value={dueDate}
+          min={today} // Set minimum date to today's date
           onChange={(e) => setDueDate(e.target.value)}
           className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
