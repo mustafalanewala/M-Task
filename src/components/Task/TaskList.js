@@ -12,9 +12,10 @@ import {
 } from "../../redux/tasksSlice";
 import TaskEditForm from "./TaskEditForm";
 import TaskForm from "./TaskForm";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { FiPlus, FiEdit, FiTrash } from "react-icons/fi";
 import { auth } from "../../firebase/firebaseConfig";
+import "react-toastify/dist/ReactToastify.css";
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -31,8 +32,7 @@ const TaskList = () => {
       if (auth.currentUser) {
         setLoading(true);
         const tasksFromDb = await fetchUserTasks(auth.currentUser.uid);
-        
-        // Check due dates and mark failed tasks
+
         const updatedTasks = tasksFromDb.map((task) => {
           const dueDate = new Date(task.dueDate);
           const currentDate = new Date();
@@ -42,7 +42,6 @@ const TaskList = () => {
           return task;
         });
 
-        // Dispatch the updated tasks to Redux store
         dispatch(setTasks(updatedTasks));
         setLoading(false);
       }
@@ -56,10 +55,12 @@ const TaskList = () => {
     try {
       await deleteTaskService(userId, id);
       dispatch(deleteTask(id));
-      toast.success("Task deleted successfully!");
+      toast.success("Task deleted successfully!", {
+        className: "toast-mobile",
+      });
     } catch (error) {
       console.error("Error deleting task:", error);
-      toast.error("Failed to delete task.");
+      toast.error("Failed to delete task.", { className: "toast-mobile" });
     } finally {
       setLoading(false);
     }
@@ -72,10 +73,12 @@ const TaskList = () => {
       await updateTaskStatus(userId, task.id, "completed");
       const updatedTask = { ...task, status: "completed" };
       dispatch(updateTaskAction(updatedTask));
-      toast.success("Task marked as completed!");
+      toast.success("Task marked as completed!", { className: "toast-mobile" });
     } catch (error) {
       console.error("Error marking task as completed:", error);
-      toast.error("Failed to mark task as completed.");
+      toast.error("Failed to mark task as completed.", {
+        className: "toast-mobile",
+      });
     } finally {
       setLoading(false);
     }
@@ -88,10 +91,12 @@ const TaskList = () => {
       await updateTaskStatus(userId, task.id, "failed");
       const updatedTask = { ...task, status: "failed" };
       dispatch(updateTaskAction(updatedTask));
-      toast.error("Task marked as failed!");
+      toast.error("Task marked as failed!", { className: "toast-mobile" });
     } catch (error) {
       console.error("Error marking task as failed:", error);
-      toast.error("Failed to mark task as failed.");
+      toast.error("Failed to mark task as failed.", {
+        className: "toast-mobile",
+      });
     } finally {
       setLoading(false);
     }
@@ -134,6 +139,7 @@ const TaskList = () => {
         </button>
       </div>
 
+      {/* Dashboard Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className="bg-blue-200 p-4 rounded shadow">
           <h3 className="text-xl font-semibold">Total Tasks</h3>
@@ -153,6 +159,7 @@ const TaskList = () => {
         </div>
       </div>
 
+      {/* Filter and Sort Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
         <div className="filter-sort-controls space-x-4">
           <select
@@ -175,6 +182,7 @@ const TaskList = () => {
         </div>
       </div>
 
+      {/* Task List */}
       {loading ? (
         <div className="loading-spinner">Loading tasks...</div>
       ) : (
@@ -249,6 +257,9 @@ const TaskList = () => {
           </div>
         </div>
       )}
+
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   );
 };

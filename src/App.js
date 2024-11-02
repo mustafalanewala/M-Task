@@ -36,7 +36,7 @@ const App = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-100">
-                <Puff color="#00BFFF" height={100} width={100} /> {/* Using Puff loader */}
+                <Puff color="#00BFFF" height={100} width={100} />
             </div>
         );
     }
@@ -47,9 +47,9 @@ const App = () => {
                 <Routes>
                     {user ? (
                         <>
-                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/task" element={<Dashboard />} /> {/* Main entry point for Dashboard */}
                             <Route path="/notification" element={<Dashboard />} />
-                            <Route path="*" element={<Navigate to="/" />} />
+                            <Route path="*" element={<Navigate to="/task" />} /> {/* Redirect all unknown routes to /task */}
                         </>
                     ) : (
                         <>

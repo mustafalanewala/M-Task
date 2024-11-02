@@ -1,6 +1,7 @@
 import React from 'react';
 import { signInWithGoogle } from '../../firebase/auth';
 import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,7 +10,13 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            await signInWithGoogle();
+            const user = await signInWithGoogle();
+            dispatch(setUser({
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+            }));
+            toast.success("Login successful!");
         } catch (error) {
             toast.error("Login failed. Please try again.");
             console.error("Login error:", error);
