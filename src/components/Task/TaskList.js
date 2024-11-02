@@ -1,4 +1,3 @@
-// src/components/Task/TaskList.js
 import React, { useEffect, useState } from "react";
 import {
   fetchUserTasks,
@@ -32,7 +31,19 @@ const TaskList = () => {
       if (auth.currentUser) {
         setLoading(true);
         const tasksFromDb = await fetchUserTasks(auth.currentUser.uid);
-        dispatch(setTasks(tasksFromDb));
+        
+        // Check due dates and mark failed tasks
+        const updatedTasks = tasksFromDb.map((task) => {
+          const dueDate = new Date(task.dueDate);
+          const currentDate = new Date();
+          if (dueDate < currentDate && task.status !== "completed") {
+            return { ...task, status: "failed" };
+          }
+          return task;
+        });
+
+        // Dispatch the updated tasks to Redux store
+        dispatch(setTasks(updatedTasks));
         setLoading(false);
       }
     };

@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+// src/App.js
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setUser, clearUser } from './redux/userSlice';
@@ -7,10 +9,12 @@ import Login from './components/Auth/Login';
 import Dashboard from './pages/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Puff } from 'react-loader-spinner'; // Importing Puff loader
 
 const App = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userInfo);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -23,20 +27,40 @@ const App = () => {
             } else {
                 dispatch(clearUser());
             }
+            setLoading(false);
         });
 
         return () => unsubscribe();
     }, [dispatch]);
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-gray-100">
+                <Puff color="#00BFFF" height={100} width={100} /> {/* Using Puff loader */}
+            </div>
+        );
+    }
+
     return (
-        <div className="App">
-            {user ? (
-                <Dashboard />
-            ) : (
-                <Login />
-            )}
-            <ToastContainer /> 
-        </div>
+        <Router>
+            <div className="App">
+                <Routes>
+                    {user ? (
+                        <>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/notification" element={<Dashboard />} />
+                            <Route path="*" element={<Navigate to="/" />} />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="*" element={<Navigate to="/login" />} />
+                        </>
+                    )}
+                </Routes>
+                <ToastContainer />
+            </div>
+        </Router>
     );
 };
 

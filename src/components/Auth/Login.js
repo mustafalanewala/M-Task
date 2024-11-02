@@ -1,38 +1,32 @@
-// src/components/Auth/Login.js
 import React from 'react';
 import { signInWithGoogle } from '../../firebase/auth';
-import { FiLogIn } from 'react-icons/fi'; // Importing an icon for a modern touch
+import { useDispatch } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
+    const dispatch = useDispatch();
+
     const handleLogin = async () => {
         try {
             await signInWithGoogle();
-            // Redirect user or perform other actions after login if needed
         } catch (error) {
-            console.error("Login failed:", error);
+            toast.error("Login failed. Please try again.");
+            console.error("Login error:", error);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-600">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                    Welcome to MTask
-                </h2>
-                <p className="text-gray-600 text-center mb-8">
-                    Your personal task manager. Stay organized, be productive!
-                </p>
-                <button 
-                    onClick={handleLogin} 
-                    className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md transform hover:scale-105"
-                >
-                    <FiLogIn className="mr-2" />
-                    Sign in with Google
-                </button>
-                <p className="text-center text-gray-500 mt-6">
-                    By signing in, you agree to our Terms of Service and Privacy Policy.
-                </p>
-            </div>
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            <h1 className="text-5xl font-bold mb-6 text-center">Welcome To MTask</h1>
+            <p className="text-lg mb-4 text-gray-600">Please sign in to continue</p>
+            <button 
+                onClick={handleLogin} 
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+            >
+                Sign in with Google
+            </button>
+            <ToastContainer />
         </div>
     );
 };

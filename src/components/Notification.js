@@ -1,7 +1,7 @@
 // src/components/Notification.js
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FiCheckCircle, FiInfo, FiXCircle } from "react-icons/fi";
+import { FiLoader, FiCheckCircle, FiInfo, FiXCircle } from "react-icons/fi";
 import { auth } from "../firebase/firebaseConfig";
 import { fetchUserTasks } from "../firebase/taskService";
 
@@ -13,7 +13,8 @@ const Notification = () => {
         threeDays: [],
     });
     const [loading, setLoading] = useState(false);
-    const tasks = useSelector((state) => state.tasks.taskList); // Get tasks from Redux
+    const [filter, setFilter] = useState("all");
+    const tasks = useSelector((state) => state.tasks.taskList);
 
     useEffect(() => {
         const loadNotifications = async () => {
@@ -25,18 +26,12 @@ const Notification = () => {
                 setLoading(false);
             }
         };
-
         loadNotifications();
     }, [tasks]);
 
     const categorizeNotifications = (tasks) => {
         const now = new Date();
-        const categorized = {
-            today: [],
-            oneDay: [],
-            twoDays: [],
-            threeDays: [],
-        };
+        const categorized = { today: [], oneDay: [], twoDays: [], threeDays: [] };
 
         tasks.forEach((task) => {
             const dueDate = new Date(task.dueDate);
@@ -51,57 +46,111 @@ const Notification = () => {
         return categorized;
     };
 
+    const filteredNotifications = filter === "all" ? notifications : { [filter]: notifications[filter] };
+
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
-            <h2 className="text-lg font-bold border-b-2 border-gray-300 pb-2">Notifications</h2>
-            <div className="mt-4">
-                {loading ? (
-                    <p>Loading notifications...</p>
-                ) : (
-                    <>
-                        {Object.entries(notifications).map(([key, tasks]) => (
-                            tasks.length > 0 && (
-                                <div key={key} className="mb-4">
-                                    <h3 className="font-semibold text-md text-gray-800 flex items-center">
-                                        <NotificationIcon status={key} className="mr-2" />
-                                        {formatNotificationTitle(key)}
-                                    </h3>
-                                    <ul className="list-disc pl-5">
-                                        {tasks.map((task, index) => (
-                                            <li key={index} className="text-gray-700">
-                                                {task.name} - Due on:{" "}
-                                                <span className="font-medium">
-                                                    {new Date(task.dueDate).toLocaleDateString()}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )
+        <div className="flex flex-col items-center">
+            <div className="w-full">
+                <header className="flex items-center justify-between mb-6">
+                    <h2 className="text-3xl font-extrabold text-gray-800">Notifications</h2>
+                    <div className="space-x-2 flex">
+                        {["all", "today", "oneDay", "twoDays", "threeDays"].map((option) => (
+                            <button
+                                key={option}
+                                onClick={() => setFilter(option)}
+                                className={`px-3 py-1 rounded-full font-semibold text-sm ${filter === option ? `bg-${getColor(option)}-600 text-white` : "bg-gray-200 text-gray-700"}`}
+                            >
+                                {formatButtonLabel(option)}
+                            </button>
                         ))}
-                        {Object.values(notifications).every((group) => group.length === 0) && (
-                            <p className="text-gray-500">No upcoming tasks!</p>
-                        )}
-                    </>
-                )}
+                    </div>
+                </header>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {loading ? (
+                        <div className="col-span-full flex justify-center items-center text-gray-600">
+                            <FiLoader size={24} className="animate-spin mr-2" />
+                            Loading notifications...
+                        </div>
+                    ) : (
+                        Object.entries(filteredNotifications).map(([key, tasks]) => (
+                            tasks.length > 0 && (
+                                <NotificationCard key={key} status={key} tasks={tasks} />
+                            )
+                        ))
+                    )}
+                    {Object.values(filteredNotifications).every((group) => group.length === 0) && (
+                        <p className="col-span-full text-center text-gray-500">
+                            No upcoming tasks!
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     );
 };
 
+const NotificationCard = ({ status, tasks }) => (
+    <div className={`p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 ${getCardStyles(status)}`}>
+        <h3 className="font-semibold text-lg mb-4 flex items-center">
+            <NotificationIcon status={status} className="mr-2" />
+            {formatNotificationTitle(status)}
+        </h3>
+        <ul className="space-y-2">
+            {tasks.map((task, index) => (
+                <li key={index} className="flex justify-between items-center text-gray-800">
+                    <span className="font-medium">{task.name}</span>
+                    <span className="text-sm font-light">{new Date(task.dueDate).toLocaleDateString()}</span>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
 const NotificationIcon = ({ status }) => {
     switch (status) {
         case 'today':
-            return <FiCheckCircle className="text-green-500" />;
+            return <FiCheckCircle size={24} className="text-green-500" />;
         case 'oneDay':
-            return <FiInfo className="text-blue-500" />;
+            return <FiInfo size={24} className="text-blue-500" />;
         case 'twoDays':
-            return <FiInfo className="text-orange-500" />;
+            return <FiInfo size={24} className="text-orange-500" />;
         case 'threeDays':
-            return <FiXCircle className="text-red-500" />;
+            return <FiXCircle size={24} className="text-red-500" />;
         default:
-            return <FiInfo className="text-gray-500" />;
+            return <FiInfo size={24} className="text-gray-500" />;
     }
+};
+
+const getCardStyles = (status) => {
+    switch (status) {
+        case 'today': return "bg-green-50 border-l-4 border-green-400";
+        case 'oneDay': return "bg-blue-50 border-l-4 border-blue-400";
+        case 'twoDays': return "bg-orange-50 border-l-4 border-orange-400";
+        case 'threeDays': return "bg-red-50 border-l-4 border-red-400";
+        default: return "bg-gray-50 border-l-4 border-gray-400";
+    }
+};
+
+const getColor = (filter) => {
+    switch (filter) {
+        case 'today': return 'green';
+        case 'oneDay': return 'blue';
+        case 'twoDays': return 'orange';
+        case 'threeDays': return 'red';
+        default: return 'gray';
+    }
+};
+
+const formatButtonLabel = (filter) => {
+    const labels = {
+        all: "All",
+        today: "Today",
+        oneDay: "Tomorrow",
+        twoDays: "2 Days",
+        threeDays: "3 Days",
+    };
+    return labels[filter];
 };
 
 const formatNotificationTitle = (key) => {
