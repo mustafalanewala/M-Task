@@ -175,7 +175,7 @@ const TaskList = () => {
             value={sortOrder}
             className="p-2 border rounded"
           >
-            <option value="default">Default Order</option>{" "}
+            <option value="default">Sort By</option>{" "}
             {/* Added default option */}
             <option value="asc">Sort A-Z</option>
             <option value="desc">Sort Z-A</option>
