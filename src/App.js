@@ -9,7 +9,7 @@ import Login from './components/Auth/Login';
 import Dashboard from './pages/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Puff } from 'react-loader-spinner'; // Importing Puff loader
+import { Puff } from 'react-loader-spinner';
 
 const App = () => {
     const dispatch = useDispatch();

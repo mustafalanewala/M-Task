@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { updateTask } from "../../firebase/taskService";
 import { useDispatch } from "react-redux";
 import { updateTask as updateTaskAction } from "../../redux/tasksSlice";
@@ -10,6 +10,7 @@ const TaskEditForm = ({ task, onClose }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state for task update
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,29 +22,44 @@ const TaskEditForm = ({ task, onClose }) => {
     }
   }, [task]);
 
-  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split("T")[0];
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const userId = auth.currentUser.uid;
-    const updatedTask = {
-      id: task.id,
-      name: taskName,
-      description,
-      category,
-      dueDate,
-      status: task.status,
-    };
-    try {
-      await updateTask(userId, task.id, updatedTask);
-      dispatch(updateTaskAction(updatedTask));
-      onClose();
-      toast.success("Task updated successfully!");
-    } catch (error) {
-      console.error("Error updating task:", error.message);
-      toast.error("Failed to update task: " + error.message);
-    }
-  };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      if (!auth.currentUser) {
+        toast.error("User not authenticated");
+        return;
+      }
+
+      const userId = auth.currentUser.uid;
+      const updatedTask = {
+        id: task.id,
+        name: taskName,
+        description,
+        category,
+        dueDate,
+        status: task.status,
+      };
+
+      try {
+        setLoading(true);
+        await updateTask(userId, task.id, updatedTask);
+        dispatch(updateTaskAction(updatedTask));
+        onClose();
+        toast.success("Task updated successfully!");
+      } catch (error) {
+        console.error("Error updating task:", error.message);
+        toast.error("Failed to update task: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [task, taskName, description, category, dueDate, onClose, dispatch]
+  );
+
+  const handleChange = (setter) => (e) => setter(e.target.value);
 
   return (
     <form
@@ -59,7 +75,7 @@ const TaskEditForm = ({ task, onClose }) => {
           type="text"
           placeholder="Task Name"
           value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
+          onChange={handleChange(setTaskName)}
           required
           className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
@@ -71,7 +87,7 @@ const TaskEditForm = ({ task, onClose }) => {
         <textarea
           placeholder="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleChange(setDescription)}
           className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -81,7 +97,7 @@ const TaskEditForm = ({ task, onClose }) => {
           type="text"
           placeholder="Category"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={handleChange(setCategory)}
           required
           className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
@@ -91,8 +107,8 @@ const TaskEditForm = ({ task, onClose }) => {
         <input
           type="date"
           value={dueDate}
-          min={today} // Set minimum date to today's date
-          onChange={(e) => setDueDate(e.target.value)}
+          min={today}
+          onChange={handleChange(setDueDate)}
           className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -106,9 +122,12 @@ const TaskEditForm = ({ task, onClose }) => {
         </button>
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+          disabled={loading} // Disable button while loading
+          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Update Task
+          {loading ? "Updating..." : "Update Task"} {/* Show loading text */}
         </button>
       </div>
     </form>
