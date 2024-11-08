@@ -48,15 +48,15 @@ const Notification = () => {
     filter === "all" ? notifications : { [filter]: notifications[filter] };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto">
       <header className="mb-6 flex flex-col sm:flex-row justify-between items-center">
-        <h2 className="text-2xl font-bold p-1">Notifications</h2>
+        <h2 className="text-xl sm:text-2xl font-bold p-1">Notifications</h2>
         <div className="flex flex-wrap justify-center space-x-2 mt-4 sm:mt-0">
           {["all", "today", "tomorrow", "upcoming"].map((option) => (
             <button
               key={option}
               onClick={() => setFilter(option)}
-              className="px-5 py-2 mb-2 rounded-md font-medium bg-gray-300 hover:shadow-lg"
+              className="mt-2 sm:mt-0 font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center"
             >
               {formatButtonLabel(option)}
             </button>
@@ -90,7 +90,7 @@ const Notification = () => {
 
 const NotificationCard = ({ status, task }) => (
   <div
-    className={`p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 ${getCardStyles(
+    className={`p-6 rounded-lg shadow-lg transition-transform transform ${getCardStyles(
       status
     )}`}
   >
@@ -117,9 +117,9 @@ const getCardStyles = (status) => {
     case "tomorrow":
       return "bg-blue-50 border-l-4 border-blue-400";
     case "upcoming":
-      return "bg-gray-50 border-l-4 border-gray-400";
+      return "bg-gray-100 border-l-4 border-gray-400";
     default:
-      return "bg-gray-50 border-l-4 border-gray-400";
+      return "bg-gray-10 border-l-4 border-gray-400";
   }
 };
 
