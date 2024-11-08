@@ -19,88 +19,103 @@ import "react-toastify/dist/ReactToastify.css";
 
 const TaskList = () => {
   const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks.taskList);
-  const [editingTask, setEditingTask] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [filter, setFilter] = useState("all");
-  const [sortOrder, setSortOrder] = useState("default");
-  const [loading, setLoading] = useState(false);
+  const tasks = useSelector((state) => state.tasks.taskList); // Get list of tasks from Redux store
+  const [editingTask, setEditingTask] = useState(null); // Track the task being edited
+  const [showEditModal, setShowEditModal] = useState(false); // Toggle for edit modal
+  const [showAddModal, setShowAddModal] = useState(false); // Toggle for add modal
+  const [filter, setFilter] = useState("all"); // Filter for tasks (all, completed, failed)
+  const [sortOrder, setSortOrder] = useState("default"); // Sort order for tasks
+  const [loading, setLoading] = useState(false); // Track loading state
 
   useEffect(() => {
+    // Fetch and load tasks when the component mounts
     const loadTasks = async () => {
       if (auth.currentUser) {
+        // Check if the user is authenticated
         setLoading(true);
-        const tasksFromDb = await fetchUserTasks(auth.currentUser.uid);
+        const tasksFromDb = await fetchUserTasks(auth.currentUser.uid); // Fetch tasks from database
 
+        // Automatically mark tasks as "failed" if the due date has passed and the task is not completed
         const updatedTasks = tasksFromDb.map((task) => {
           const dueDate = new Date(task.dueDate);
           const currentDate = new Date();
+
+          // Set the time of both dates to midnight to compare only the date part
+          dueDate.setHours(0, 0, 0, 0);
+          currentDate.setHours(0, 0, 0, 0);
+
+          // If due date is before today and the status is not "completed," mark as "failed"
           if (dueDate < currentDate && task.status !== "completed") {
             return { ...task, status: "failed" };
           }
           return task;
         });
 
+        // Update the Redux store with the modified tasks
         dispatch(setTasks(updatedTasks));
-        setLoading(false);
+        setLoading(false); // Set loading to false when done
       }
     };
-    loadTasks();
+    loadTasks(); // Execute loadTasks
   }, [dispatch]);
 
+  // Delete a task
   const handleDelete = async (id) => {
     const userId = auth.currentUser.uid;
-    setLoading(true);
+    setLoading(true); // Set loading to true while deleting a task
     try {
-      await deleteTaskService(userId, id);
-      dispatch(deleteTask(id));
+      await deleteTaskService(userId, id); // Delete the task in the database
+      dispatch(deleteTask(id)); // Remove the task from Redux store
       toast.success("Task deleted successfully!");
     } catch (error) {
       console.error("Error deleting task:", error);
       toast.error("Failed to delete task.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false when done
     }
   };
 
+  // Mark a task as completed
   const handleComplete = async (task) => {
-    setLoading(true);
+    setLoading(true); // Set loading to true while updating status
     const userId = auth.currentUser.uid;
     try {
-      await updateTaskStatus(userId, task.id, "completed");
-      const updatedTask = { ...task, status: "completed" };
-      dispatch(updateTaskAction(updatedTask));
+      await updateTaskStatus(userId, task.id, "completed"); // Update the status in the database
+      const updatedTask = { ...task, status: "completed" }; // Update local task data
+      dispatch(updateTaskAction(updatedTask)); // Update Redux store
       toast.success("Task marked as completed!");
     } catch (error) {
       console.error("Error marking task as completed:", error);
       toast.error("Failed to mark task as completed.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false when done
     }
   };
 
+  // Mark a task as failed
   const handleFail = async (task) => {
-    setLoading(true);
+    setLoading(true); // Set loading to true while updating status
     const userId = auth.currentUser.uid;
     try {
-      await updateTaskStatus(userId, task.id, "failed");
-      const updatedTask = { ...task, status: "failed" };
-      dispatch(updateTaskAction(updatedTask));
+      await updateTaskStatus(userId, task.id, "failed"); // Update the status in the database
+      const updatedTask = { ...task, status: "failed" }; // Update local task data
+      dispatch(updateTaskAction(updatedTask)); // Update Redux store
       toast.error("Task marked as failed!");
     } catch (error) {
       console.error("Error marking task as failed:", error);
       toast.error("Failed to mark task as failed.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false when done
     }
   };
 
+  // Open the edit modal for a specific task
   const handleEdit = (task) => {
     setEditingTask(task);
     setShowEditModal(true);
   };
 
+  // Filter and sort tasks based on user selection
   const filteredTasks = tasks.filter((task) => {
     if (filter === "completed") return task.status === "completed";
     if (filter === "failed") return task.status === "failed";
@@ -109,15 +124,15 @@ const TaskList = () => {
 
   const sortedTasks = (() => {
     let sorted = [...filteredTasks];
-
     if (sortOrder === "asc") {
-      sorted.sort((a, b) => a.name.localeCompare(b.name));
+      sorted.sort((a, b) => a.name.localeCompare(b.name)); // Sort tasks alphabetically A-Z
     } else if (sortOrder === "desc") {
-      sorted.sort((a, b) => b.name.localeCompare(a.name));
+      sorted.sort((a, b) => b.name.localeCompare(a.name)); // Sort tasks alphabetically Z-A
     }
     return sorted;
   })();
 
+  // Calculate task statistics
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(
     (task) => task.status === "completed"
@@ -127,6 +142,7 @@ const TaskList = () => {
 
   return (
     <div className="task-list">
+      {/* Task Dashboard header and New Task button */}
       <div className="flex flex-row sm:flex-row justify-between items-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold p-1">Task Dashboard</h2>
         <button
@@ -138,7 +154,7 @@ const TaskList = () => {
         </button>
       </div>
 
-      {/* Dashboard Statistics */}
+      {/* Dashboard Statistics display */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className="bg-blue-200 p-4 rounded shadow">
           <h3 className="text-xl font-semibold">Total Tasks</h3>
@@ -158,7 +174,7 @@ const TaskList = () => {
         </div>
       </div>
 
-      {/* Filter and Sort Controls */}
+      {/* Filter and Sort controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
         <div className="filter-sort-controls space-x-4">
           <select
@@ -175,15 +191,14 @@ const TaskList = () => {
             value={sortOrder}
             className="p-2 border rounded"
           >
-            <option value="default">Sort By</option>{" "}
-            {/* Added default option */}
+            <option value="default">Sort By</option>
             <option value="asc">Sort A-Z</option>
             <option value="desc">Sort Z-A</option>
           </select>
         </div>
       </div>
 
-      {/* Task List */}
+      {/* Task List display */}
       {loading ? (
         <div className="loading-spinner">Loading tasks...</div>
       ) : (
@@ -240,6 +255,7 @@ const TaskList = () => {
         </div>
       )}
 
+      {/* Modals for editing and adding tasks */}
       {showEditModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
           <div className="max-w-sm w-full sm:max-w-lg">
