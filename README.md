@@ -1,35 +1,40 @@
 # 🌟 **MTask**
 
-MTask is your all-in-one task management solution, designed for seamless productivity. Effortlessly sign in with Google OAuth, create, organize, and categorize tasks to streamline your workflow.
+MTask is your all-in-one task management solution designed for seamless productivity. With features like a task dashboard for CRUD operations, real-time task notifications, and an analysis dashboard powered by Chart.js, it simplifies task organization and boosts efficiency.
+
+You can explore MTask at [m-tasks.vercel.app](https://m-tasks.vercel.app).
 
 ---
 
-## 🚀 **Features**
+## 🚀 **Key Features**
 
-- **Quick Google Sign-In:** Start managing tasks in seconds with secure Google OAuth integration.
-- **Powerful Task Management:** Create, update, and organize tasks with ease.
-- **Category Organization:** Organize tasks by categories for a clear, structured workflow.
+- **Google OAuth Integration:** Easily sign in with secure Google authentication.
+- **Task Dashboard:** Create, manage, and organize tasks effortlessly.
+- **Task Notifications:** Stay informed with real-time task notifications.
+- **Analysis Dashboard:** Visualize task performance and trends with **Chart.js** and interactive charts.
+- **Category Organization:** Keep your tasks neatly organized by categories.
 
 ---
 
 ## 🛠️ **Technology Stack**
 
-### **Frontend**
-
-- **React.js** - For building a dynamic, responsive UI.
-- **Redux** - Robust state management for a seamless user experience.
-- **React Router** - Smooth navigation between different sections.
-- **Tailwind CSS** - Modern UI design with flexibility.
-- **OAuth** - Secure, single-click Google login.
-
-### **Backend**
-
-- **Node.js & Express.js** - Fast, efficient backend server.
-- **Firebase Firestore (NoSQL)** - Real-time, scalable database solution.
-- **Firebase Authentication** - Reliable OAuth integration.
-
-### **Hosting**
-
-- **Vercel** - Lightning-fast hosting for both frontend and backend.
+- **React.js** powers the dynamic and responsive UI, complemented by **Redux** for state management.
+- **React Router** provides smooth navigation between sections.
+- **Tailwind CSS** offers modern, flexible design styling.
+- **Firebase** handles real-time database management and user authentication via **Firebase Authentication**.
+- **Node.js** & **Express.js** deliver a fast and efficient backend.
+- **Vercel** hosts the application for reliable deployment.
 
 ---
+
+## 🔧 **Tools & Libraries Used**
+
+- **Axios** for efficient HTTP requests.
+- **Chart.js** & **React-Chartjs-2** for interactive and visually appealing charts in the analysis dashboard.
+- **Firebase Firestore** for scalable NoSQL data storage.
+- **React-Icons** to provide scalable icons throughout the app.
+- **React-Loader-Spinner** for loading animations.
+- **React-Modal** for accessible modals.
+- **React-Toastify** to display toast notifications.
+- **React-Redux** for managing global state.
+- **Web-Vitals** to track essential web performance metrics.
