@@ -10,20 +10,22 @@ const TaskForm = ({ onClose }) => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState(""); // For custom category
   const [dueDate, setDueDate] = useState("");
   const dispatch = useDispatch();
   const [user] = useAuthState(auth);
 
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
 
+  const categories = ["Work", "Personal", "Study", "Health"]; // Predefined categories
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newTask = {
       name: taskName,
       description,
-      category,
+      category: category === "Other" ? customCategory : category, // Use custom category if "Other" is selected
       dueDate,
-      completed: false,
     };
 
     try {
@@ -35,6 +37,7 @@ const TaskForm = ({ onClose }) => {
         setTaskName("");
         setDescription("");
         setCategory("");
+        setCustomCategory("");
         setDueDate("");
       } else {
         console.error("User is not authenticated");
@@ -78,14 +81,35 @@ const TaskForm = ({ onClose }) => {
       </div>
       <div>
         <label className="block text-gray-600 font-medium mb-1">Category</label>
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div className="flex items-center space-x-2">
+          <select
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setCustomCategory(""); // Reset custom category input when selecting a predefined category
+            }}
+            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              category === "Other" ? "w-38" : ""
+            }`}
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="Other">Other</option>
+          </select>
+          {category === "Other" && (
+            <input
+              type="text"
+              placeholder="Enter Custom Category"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          )}
+        </div>
       </div>
       <div>
         <label className="block text-gray-600 font-medium mb-1">Due Date</label>

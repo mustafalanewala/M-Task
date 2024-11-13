@@ -9,8 +9,9 @@ const TaskEditForm = ({ task, onClose }) => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState(""); // For custom category
   const [dueDate, setDueDate] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state for task update
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,11 +19,14 @@ const TaskEditForm = ({ task, onClose }) => {
       setTaskName(task.name);
       setDescription(task.description);
       setCategory(task.category);
+      setCustomCategory(task.category === "Other" ? task.category : "");
       setDueDate(task.dueDate);
     }
   }, [task]);
 
   const today = new Date().toISOString().split("T")[0];
+
+  const categories = ["Work", "Personal", "Study", "Health"]; // Predefined categories
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -38,7 +42,7 @@ const TaskEditForm = ({ task, onClose }) => {
         id: task.id,
         name: taskName,
         description,
-        category,
+        category: category === "Other" ? customCategory : category, // Use custom category if "Other" is selected
         dueDate,
         status: task.status,
       };
@@ -56,7 +60,7 @@ const TaskEditForm = ({ task, onClose }) => {
         setLoading(false);
       }
     },
-    [task, taskName, description, category, dueDate, onClose, dispatch]
+    [task, taskName, description, category, customCategory, dueDate, onClose, dispatch]
   );
 
   const handleChange = (setter) => (e) => setter(e.target.value);
@@ -68,9 +72,7 @@ const TaskEditForm = ({ task, onClose }) => {
     >
       <h2 className="text-xl font-semibold text-gray-800">Edit Task</h2>
       <div>
-        <label className="block text-gray-600 font-medium mb-1">
-          Task Name
-        </label>
+        <label className="block text-gray-600 font-medium mb-1">Task Name</label>
         <input
           type="text"
           placeholder="Task Name"
@@ -81,9 +83,7 @@ const TaskEditForm = ({ task, onClose }) => {
         />
       </div>
       <div>
-        <label className="block text-gray-600 font-medium mb-1">
-          Description
-        </label>
+        <label className="block text-gray-600 font-medium mb-1">Description</label>
         <textarea
           placeholder="Description"
           value={description}
@@ -93,14 +93,33 @@ const TaskEditForm = ({ task, onClose }) => {
       </div>
       <div>
         <label className="block text-gray-600 font-medium mb-1">Category</label>
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={handleChange(setCategory)}
-          required
-          className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div className="flex items-center space-x-2">
+          <select
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setCustomCategory(""); // Reset custom category input when selecting a predefined category
+            }}
+            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${category === "Other" ? "w-38" : ""}`}
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="Other">Other</option>
+          </select>
+          {category === "Other" && (
+            <input
+              type="text"
+              placeholder="Enter Custom Category"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          )}
+        </div>
       </div>
       <div>
         <label className="block text-gray-600 font-medium mb-1">Due Date</label>
@@ -122,12 +141,10 @@ const TaskEditForm = ({ task, onClose }) => {
         </button>
         <button
           type="submit"
-          disabled={loading} // Disable button while loading
-          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={loading}
         >
-          {loading ? "Updating..." : "Update Task"} {/* Show loading text */}
+          {loading ? "Updating..." : "Update Task"}
         </button>
       </div>
     </form>
