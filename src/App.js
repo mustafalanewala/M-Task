@@ -50,6 +50,7 @@ const App = () => {
                             <Route path="/task" element={<Dashboard />} /> {/* Main entry point for Dashboard */}
                             <Route path="/notification" element={<Dashboard />} />
                             <Route path="/analytics" element={<Dashboard />} />
+                            <Route path="/archived" element={<Dashboard />} />
                             <Route path="*" element={<Navigate to="/task" />} /> {/* Redirect all unknown routes to /task */}
                         </>
                     ) : (

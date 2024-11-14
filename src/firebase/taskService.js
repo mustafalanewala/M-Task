@@ -86,3 +86,27 @@ export const updateTaskStatus = async (userId, id, status) => {
     throw error;
   }
 };
+
+// Archive task
+export const archiveTask = async (userId, id) => {
+  try {
+    const taskDoc = doc(db, `users/${userId}/tasks`, id);
+    await updateDoc(taskDoc, { archived: true });
+  } catch (error) {
+    console.error("Error archiving task:", error);
+    toast.error("Failed to archive task. Please try again.");
+    throw error;
+  }
+};
+
+// Unarchive task
+export const unarchiveTask = async (userId, id) => {
+  try {
+    const taskDoc = doc(db, `users/${userId}/tasks`, id);
+    await updateDoc(taskDoc, { archived: false });
+  } catch (error) {
+    console.error("Error unarchiving task:", error);
+    toast.error("Failed to unarchive task. Please try again.");
+    throw error;
+  }
+};

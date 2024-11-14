@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FiLogOut, FiHome, FiBell, FiBarChart } from 'react-icons/fi'; 
+import { MdArchive } from 'react-icons/md';  // Importing Material Design Archive icon
 import TaskList from '../components/Task/TaskList';
 import Notification from '../components/Notification';
 import Analytics from '../components/Analytics'; // Import the Analytics component
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../redux/userSlice';
 import { auth } from '../firebase/firebaseConfig';
+import Archived from '../components/Archived';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -19,6 +21,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (location.pathname === '/notification') setActiveComponent('notification');
+        else if (location.pathname === '/archived') setActiveComponent('archived');
         else if (location.pathname === '/analytics') setActiveComponent('analytics');
         else setActiveComponent('taskList');
     }, [location.pathname]);
@@ -55,6 +58,9 @@ const Dashboard = () => {
                         <div className="cursor-pointer" onClick={() => handleNavigation('analytics')}>
                             <FiBarChart size={28} className={`text-gray-400 hover:text-white ${activeComponent === 'analytics' && 'text-white'}`} />
                         </div>
+                        <div className="cursor-pointer" onClick={() => handleNavigation('archived')}>
+                            <MdArchive  size={28} className={`text-gray-400 hover:text-white ${activeComponent === 'archived' && 'text-white'}`} />
+                        </div>
                     </div>
                 </div>
 
@@ -67,7 +73,8 @@ const Dashboard = () => {
                 <div className="bg-white rounded-lg shadow-md p-4">
                     {activeComponent === 'taskList' && <TaskList />}
                     {activeComponent === 'notification' && <Notification />}
-                    {activeComponent === 'analytics' && <Analytics tasks={tasks} />} {/* Display the Analytics component */}
+                    {activeComponent === 'analytics' && <Analytics tasks={tasks} />}
+                    {activeComponent === 'archived' && <Archived />}
                 </div>
             </div>
         </div>

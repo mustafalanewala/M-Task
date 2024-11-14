@@ -88,8 +88,8 @@ const TaskForm = ({ onClose }) => {
               setCategory(e.target.value);
               setCustomCategory(""); // Reset custom category input when selecting a predefined category
             }}
-            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-              category === "Other" ? "w-38" : ""
+            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 sm:w-full md:w-38 ${
+              category === "Other" ? "sm:w-full md:w-46" : ""
             }`}
           >
             <option value="">Select Category</option>
@@ -106,7 +106,7 @@ const TaskForm = ({ onClose }) => {
               placeholder="Enter Custom Category"
               value={customCategory}
               onChange={(e) => setCustomCategory(e.target.value)}
-              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-full sm:w-full md:w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           )}
         </div>
