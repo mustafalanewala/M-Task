@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { FiBell } from "react-icons/fi"; // Using a consistent bell icon
-import { auth } from "../firebase/firebaseConfig";
-import { fetchUserTasks } from "../firebase/taskService";
+import { FiBell } from "react-icons/fi";
 
-const Notification = () => {
+const Notification = ({ tasks }) => {
   const [notifications, setNotifications] = useState({
     today: [],
     tomorrow: [],
     upcoming: [],
   });
   const [filter, setFilter] = useState("all");
-  const tasks = useSelector((state) => state.tasks.taskList);
 
   useEffect(() => {
-    const loadNotifications = async () => {
-      if (auth.currentUser) {
-        try {
-          const tasksFromDb = await fetchUserTasks(auth.currentUser.uid);
-          const categorizedNotifications = categorizeNotifications(tasksFromDb);
-          setNotifications(categorizedNotifications);
-        } catch (error) {
-          console.error("Failed to fetch tasks:", error);
-        }
-      }
-    };
-    loadNotifications();
+    const categorizedNotifications = categorizeNotifications(tasks);
+    setNotifications(categorizedNotifications);
   }, [tasks]);
 
   const categorizeNotifications = (tasks) => {
@@ -49,14 +35,14 @@ const Notification = () => {
 
   return (
     <div className="container mx-auto">
-      <header className="mb-6 flex flex-col sm:flex-row justify-between items-center">
+      <header className="mb-6 flex flex-col sm:flex-row justify-between">
         <h2 className="text-xl sm:text-2xl font-bold p-1">Notifications</h2>
-        <div className="flex flex-wrap justify-center space-x-2 mt-4 sm:mt-0">
+        <div className="flex flex-wrap sm:mt-0">
           {["all", "today", "tomorrow", "upcoming"].map((option) => (
             <button
               key={option}
               onClick={() => setFilter(option)}
-              className="mt-2 sm:mt-0 font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center"
+              className="mt-2 sm:mt-0 font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center mr-2"
             >
               {formatButtonLabel(option)}
             </button>

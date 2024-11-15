@@ -68,28 +68,28 @@ const TaskList = () => {
         <h2 className="text-xl sm:text-2xl font-bold p-1">Task Dashboard</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="mt-2 sm:mt-0 font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center"
+          className="font-bold bg-green-500 text-white px-4 py-2 rounded flex items-center"
         >
           <FiPlus className="mr-2" />
           New Task
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className="bg-blue-200 p-4 rounded shadow">
-          <h3 className="text-xl font-semibold">Total Tasks</h3>
+          <h3 className="text-xl font-semibold">Overall Tasks!</h3>
           <p className="text-3xl font-bold text-gray-800">{totalTasks}</p>
         </div>
         <div className="bg-green-200 p-4 rounded shadow">
-          <h3 className="text-xl font-semibold">Completed Tasks</h3>
+          <h3 className="text-xl font-semibold">Completed Tasks!</h3>
           <p className="text-3xl font-bold text-gray-800">{completedTasks}</p>
         </div>
         <div className="bg-yellow-200 p-4 rounded shadow">
-          <h3 className="text-xl font-semibold">Pending Tasks</h3>
+          <h3 className="text-xl font-semibold">Pending Tasks!</h3>
           <p className="text-3xl font-bold text-gray-800">{pendingTasks}</p>
         </div>
         <div className="bg-red-200 p-4 rounded shadow">
-          <h3 className="text-xl font-semibold">Failed Tasks</h3>
+          <h3 className="text-xl font-semibold">Failed Tasks!</h3>
           <p className="text-3xl font-bold text-gray-800">{failedTasks}</p>
         </div>
       </div>

@@ -122,7 +122,7 @@ const Dashboard = () => {
       >
         <div className="bg-white rounded-lg shadow-md p-4">
           {activeComponent === "taskList" && <TaskList />}
-          {activeComponent === "notification" && <Notification />}
+          {activeComponent === "notification" && <Notification tasks={tasks} />}
           {activeComponent === "analytics" && <Analytics tasks={tasks} />}
           {activeComponent === "archived" && <Archived />}
         </div>

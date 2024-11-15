@@ -60,7 +60,16 @@ const TaskEditForm = ({ task, onClose }) => {
         setLoading(false);
       }
     },
-    [task, taskName, description, category, customCategory, dueDate, onClose, dispatch]
+    [
+      task,
+      taskName,
+      description,
+      category,
+      customCategory,
+      dueDate,
+      onClose,
+      dispatch,
+    ]
   );
 
   const handleChange = (setter) => (e) => setter(e.target.value);
@@ -72,7 +81,9 @@ const TaskEditForm = ({ task, onClose }) => {
     >
       <h2 className="text-xl font-semibold text-gray-800">Edit Task</h2>
       <div>
-        <label className="block text-gray-600 font-medium mb-1">Task Name</label>
+        <label className="block text-gray-600 font-medium mb-1">
+          Task Name
+        </label>
         <input
           type="text"
           placeholder="Task Name"
@@ -83,7 +94,9 @@ const TaskEditForm = ({ task, onClose }) => {
         />
       </div>
       <div>
-        <label className="block text-gray-600 font-medium mb-1">Description</label>
+        <label className="block text-gray-600 font-medium mb-1">
+          Description
+        </label>
         <textarea
           placeholder="Description"
           value={description}
@@ -100,7 +113,9 @@ const TaskEditForm = ({ task, onClose }) => {
               setCategory(e.target.value);
               setCustomCategory(""); // Reset custom category input when selecting a predefined category
             }}
-            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${category === "Other" ? "w-38" : ""}`}
+            className={`border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 sm:w-full md:w-38 ${
+              category === "Other" ? "sm:w-full md:w-46" : ""
+            }`}
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
@@ -116,7 +131,7 @@ const TaskEditForm = ({ task, onClose }) => {
               placeholder="Enter Custom Category"
               value={customCategory}
               onChange={(e) => setCustomCategory(e.target.value)}
-              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded-lg py-2 px-4 mt-0 w-full sm:w-full md:w-46 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           )}
         </div>
@@ -141,7 +156,9 @@ const TaskEditForm = ({ task, onClose }) => {
         </button>
         <button
           type="submit"
-          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           disabled={loading}
         >
           {loading ? "Updating..." : "Update Task"}
