@@ -7,6 +7,7 @@ import { setUser, clearUser } from './redux/userSlice';
 import { auth } from './firebase/firebaseConfig';
 import Login from './components/Auth/Login';
 import Dashboard from './pages/Dashboard';
+import Home from './pages/Home'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Puff } from 'react-loader-spinner';
@@ -47,6 +48,7 @@ const App = () => {
                 <Routes>
                     {user ? (
                         <>
+                            <Route path="/" element={<Home />} />
                             <Route path="/task" element={<Dashboard />} /> {/* Main entry point for Dashboard */}
                             <Route path="/notification" element={<Dashboard />} />
                             <Route path="/analytics" element={<Dashboard />} />
@@ -55,6 +57,7 @@ const App = () => {
                         </>
                     ) : (
                         <>
+                            <Route path="/" element={<Home />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="*" element={<Navigate to="/login" />} />
                         </>
