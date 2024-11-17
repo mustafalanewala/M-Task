@@ -12,6 +12,7 @@ const TaskForm = ({ onClose }) => {
   const [category, setCategory] = useState("");
   const [customCategory, setCustomCategory] = useState(""); // For custom category
   const [dueDate, setDueDate] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch();
   const [user] = useAuthState(auth);
 
@@ -30,6 +31,7 @@ const TaskForm = ({ onClose }) => {
 
     try {
       if (user) {
+        setLoading(true); // Set loading to true when starting the task addition process
         const taskId = await addTask(user.uid, newTask);
         dispatch(addTaskAction({ id: taskId, ...newTask }));
         toast.success("Task added successfully!");
@@ -46,6 +48,8 @@ const TaskForm = ({ onClose }) => {
     } catch (error) {
       console.error("Error adding task:", error);
       toast.error("Failed to add task: " + error.message);
+    } finally {
+      setLoading(false); // Reset loading state after task is added
     }
   };
 
@@ -131,9 +135,12 @@ const TaskForm = ({ onClose }) => {
         </button>
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+          className={`bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading} // Disable button when loading
         >
-          Add Task
+          {loading ? "Adding..." : "Add Task"} {/* Show loading text when task is being added */}
         </button>
       </div>
     </form>

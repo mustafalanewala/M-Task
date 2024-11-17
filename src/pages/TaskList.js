@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserTasks } from "../../firebase/taskService";
-import { useDispatch, useSelector } from "react-redux";
-import { setTasks } from "../../redux/tasksSlice";
-import TaskEditForm from "./TaskEditForm";
-import TaskForm from "./TaskForm";
-import TaskCard from "./TaskCard";
-import { auth } from "../../firebase/firebaseConfig";
-import "react-toastify/dist/ReactToastify.css";
 import { FiPlus } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
+import TaskCard from "../components/Task/TaskCard";
+import TaskEditForm from "../components/Task/TaskEditForm";
+import TaskForm from "../components/Task/TaskForm";
+import { auth } from "../firebase/firebaseConfig";
+import { fetchUserTasks } from "../firebase/taskService";
+import { setTasks } from "../redux/tasksSlice";
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -46,17 +46,20 @@ const TaskList = () => {
     if (filter === "failed") return task.status === "failed";
     return true;
   });
-
+  
   const sortedTasks = (() => {
     let sorted = [...filteredTasks];
     if (sortOrder === "asc") {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortOrder === "desc") {
       sorted.sort((a, b) => b.name.localeCompare(a.name));
+    } else {
+      // Default sorting
+      sorted.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     }
     return sorted;
   })();
-
+  
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === "completed").length;
   const failedTasks = tasks.filter((task) => task.status === "failed").length;

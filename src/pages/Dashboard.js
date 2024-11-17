@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { FiLogOut, FiHome, FiBell, FiBarChart, FiMenu } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
+import { FiBarChart, FiBell, FiHome, FiLogOut, FiMenu } from "react-icons/fi";
 import { MdArchive } from "react-icons/md";
-import TaskList from "../components/Task/TaskList";
-import Notification from "../components/Notification";
-import Analytics from "../components/Analytics";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "../redux/userSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebaseConfig";
-import Archived from "../components/Archived";
+import Analytics from "../pages/Analytics";
+import Archived from "../pages/Archived";
+import Notification from "../pages/Notification";
+import TaskList from "../pages/TaskList";
+import { clearUser } from "../redux/userSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
