@@ -28,7 +28,8 @@ const Login = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gradient-to-r from-blue-500 to-blue-700">
-      <div className="w-full md:w-3/5 flex items-center justify-center py-8 md:py-0">
+      {/* Left Section: Image */}
+      <div className="w-full md:w-3/5 h-1/2 sm:h-full flex items-center justify-center py-8 md:py-0">
         <Player
           autoplay
           loop
@@ -38,12 +39,12 @@ const Login = () => {
       </div>
 
       {/* Right Section: Login Form */}
-      <div className="w-full md:w-2/5 bg-white flex items-center justify-center p-8 md:p-16 shadow-lg rounded-lg md:ml-4 mt-8 md:mt-0">
+      <div className="w-full md:w-2/5 h-1/2 sm:h-full bg-white flex items-center justify-center p-8 md:p-16 shadow-lg md:ml-4 mt-8 md:mt-0">
         <div className="flex flex-col items-center w-full">
-          <h1 className="text-4xl font-extrabold text-gray-800 mb-4 text-center">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4 text-center">
             Welcome To <span className="text-blue-600">MTasks</span>
           </h1>
-          <p className="text-lg mb-6 text-gray-600 text-center">
+          <p className="text-base sm:text-lg mb-6 text-gray-600 text-center">
             Sign in to access your task management dashboard and improve your
             productivity.
           </p>
