@@ -33,16 +33,23 @@ const Dashboard = () => {
     try {
       await auth.signOut();
       dispatch(clearUser());
+      navigate("/"); // Redirect to home after logout
     } catch (error) {
       console.error("Error logging out: ", error);
     }
   };
+  
 
   const handleNavigation = (component) => {
+    if (component === "taskList") {
+      navigate("/task"); // Navigate to /task route
+    } else {
+      navigate(`/${component}`);
+    }
     setActiveComponent(component);
-    navigate(`/${component === "taskList" ? "" : component}`);
     setIsSidebarVisible(false); // Close sidebar on mobile after navigation
   };
+  
 
   const toggleSidebar = () => setIsSidebarVisible((prevState) => !prevState);
 

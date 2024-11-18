@@ -8,8 +8,8 @@ const Home = () => {
       {/* Navbar */}
       <nav className="bg-blue-400 text-white px-6 py-4 fixed w-full top-0 z-10 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold tracking-wide">MTask</h1>
-          <ul className="flex space-x-8">
+          <h1 className="text-2xl font-bold tracking-wide">MTasks</h1>
+          <ul className="flex space-x-8 text-md font-semibold">
             <li>
               <Link
                 to="#home"
@@ -59,10 +59,10 @@ const Home = () => {
         {/* Left Section */}
         <div className="w-full md:w-1/2 text-left">
           <h4 className="text-blue-600 font-medium text-sm uppercase">
-            Simplify Your Productivity
+            Your Tasks, Simplified.
           </h4>
-          <h2 className="text-5xl font-extrabold leading-tight mb-4">
-            Welcome to MTask
+          <h2 className="text-4xl font-extrabold leading-tight mb-4">
+            Take charge of your tasks and streamline your day with MTasks.
           </h2>
           <p className="text-xl font-light opacity-80 mb-6">
             MTask is your all-in-one task management solution designed for
