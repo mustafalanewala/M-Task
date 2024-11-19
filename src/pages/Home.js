@@ -86,7 +86,7 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-wrap lg:flex-nowrap items-center justify-between container px-6 text-gray-800 ">
+      <section className="w-full min-h-screen flex flex-wrap lg:flex-nowrap items-center justify-between px-6 text-gray-800 ">
         {/* Content Section */}
         <div className="w-full lg:w-1/2 text-left order-2 lg:order-1">
           <h4 className="text-blue-600 font-medium text-sm uppercase mb-1">
@@ -100,9 +100,11 @@ const Home = () => {
             seamless productivity. From managing tasks effortlessly to gaining
             actionable insights with analytics, MTask empowers you to do more.
           </p>
-          <button className="px-8 py-3 bg-blue-400 text-white font-semibold rounded-lg shadow-md transition-colors hover:bg-blue-500">
-            Get Started
-          </button>
+          <Link to="/login">
+            <button className="px-8 py-3 bg-blue-400 text-white font-semibold rounded-lg shadow-md transition-colors hover:bg-blue-500">
+              Get Started
+            </button>
+          </Link>
         </div>
 
         {/* Image Section */}
