@@ -27,6 +27,7 @@ const TaskForm = ({ onClose }) => {
       description,
       category: category === "Other" ? customCategory : category, // Use custom category if "Other" is selected
       dueDate,
+      createdDate: new Date().toLocaleDateString(), // Add the created date in ISO format
     };
 
     try {
@@ -140,7 +141,8 @@ const TaskForm = ({ onClose }) => {
           }`}
           disabled={loading} // Disable button when loading
         >
-          {loading ? "Adding..." : "Add Task"} {/* Show loading text when task is being added */}
+          {loading ? "Adding..." : "Add Task"}{" "}
+          {/* Show loading text when task is being added */}
         </button>
       </div>
     </form>

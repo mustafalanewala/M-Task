@@ -46,7 +46,7 @@ const TaskList = () => {
     if (filter === "failed") return task.status === "failed";
     return true;
   });
-  
+
   const sortedTasks = (() => {
     let sorted = [...filteredTasks];
     if (sortOrder === "asc") {
@@ -59,9 +59,11 @@ const TaskList = () => {
     }
     return sorted;
   })();
-  
+
   const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.status === "completed").length;
+  const completedTasks = tasks.filter(
+    (task) => task.status === "completed"
+  ).length;
   const failedTasks = tasks.filter((task) => task.status === "failed").length;
   const pendingTasks = totalTasks - (completedTasks + failedTasks);
 
@@ -123,7 +125,7 @@ const TaskList = () => {
       {loading ? (
         <div className="loading-spinner">Loading tasks...</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="flex flex-col">
           {sortedTasks.map((task) => (
             <TaskCard
               key={task.id}
