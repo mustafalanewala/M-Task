@@ -2,7 +2,7 @@
 
 MTask is your all-in-one task management solution designed for seamless productivity. With features like a task dashboard for CRUD operations, real-time task notifications, and an analysis dashboard powered by Chart.js, it simplifies task organization and boosts efficiency.
 
-You can explore MTask at [m-tasks.vercel.app](https://m-tasks.vercel.app).
+You can explore MTask at [m-tasks.vercel.app](https://mtasks.vercel.app).
 
 ---
 
