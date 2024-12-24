@@ -11,7 +11,9 @@ import {
   archiveTask as archiveTaskService,
 } from "../../firebase/taskService";
 import { toast } from "react-toastify";
-import { FiEdit, FiTrash, FiArchive, FiCheck } from "react-icons/fi";
+import { FiEdit, FiTrash, FiCheck, FiXCircle  } from "react-icons/fi";
+import { MdArchive } from "react-icons/md";
+
 import { auth } from "../../firebase/firebaseConfig";
 
 const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
@@ -65,11 +67,11 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
         } relative`}
         onClick={() => setShowDetails(true)}
       >
-        <div className="flex justify-between font-semibold">
+        <div className="flex justify-between font-semibold cursor-pointer">
           <p className="">{task.name}</p>
           <div className="flex gap-6">
-            {" "}
-            <p>Created On: {task.createdDate}</p>
+            {/* {" "} */}
+            {/* <p>Created On: {task.createdDate}</p> */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -77,7 +79,7 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
               }}
               className="text-blue-600 hover:text-blue-800"
             >
-              <FiArchive size={20} />
+              <MdArchive size={22} />
             </button>
           </div>
         </div>
@@ -88,10 +90,10 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl"
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
               onClick={() => setShowDetails(false)}
             >
-              &times;
+              <FiXCircle size={25} />
             </button>
             <h3 className="text-2xl font-bold mb-4">{task.name}</h3>
             <p className="mb-2">
@@ -131,11 +133,17 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
                   setShowEditModal(true);
                   setShowDetails(false);
                 }}
-                className="flex-1 flex items-center justify-center space-x-2 bg-yellow-500 text-white p-2 rounded hover:bg-yellow-700 transition duration-200"
+                className={`flex-1 flex items-center justify-center space-x-2 bg-yellow-500 text-white p-2 rounded hover:bg-yellow-700 transition duration-200 ${
+                  task.status === "completed"
+                    ? "cursor-not-allowed opacity-70"
+                    : ""
+                }`}
+                disabled={task.status === "completed"}
               >
                 <FiEdit size={20} />
                 <span>Edit</span>
               </button>
+
               <button
                 onClick={() => {
                   handleDelete(task.id);

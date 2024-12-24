@@ -4,10 +4,10 @@ import { MdArchive } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebaseConfig";
-import Analytics from "../pages/Analytics";
-import Archived from "../pages/Archived";
-import Notification from "../pages/Notification";
-import TaskList from "../pages/TaskList";
+import Analytics from "./Analytics";
+import Archived from "./Archived";
+import Notification from "./Notification";
+import TaskList from "./TaskList";
 import { clearUser } from "../redux/userSlice";
 
 const Dashboard = () => {
