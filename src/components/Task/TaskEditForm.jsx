@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { updateTask } from "../../firebase/taskService";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateTask as updateTaskAction } from "../../redux/tasksSlice";
-import { auth } from "../../firebase/firebaseConfig";
 import { toast } from "react-toastify";
+import { auth } from "../../firebase/firebaseConfig";
+import { updateTask } from "../../firebase/taskService";
+import { updateTask as updateTaskAction } from "../../redux/tasksSlice";
 
 const TaskEditForm = ({ task, onClose }) => {
   const [taskName, setTaskName] = useState("");
@@ -52,10 +52,8 @@ const TaskEditForm = ({ task, onClose }) => {
         await updateTask(userId, task.id, updatedTask);
         dispatch(updateTaskAction(updatedTask));
         onClose();
-        toast.success("Task updated successfully!");
       } catch (error) {
         console.error("Error updating task:", error.message);
-        toast.error("Failed to update task: " + error.message);
       } finally {
         setLoading(false);
       }

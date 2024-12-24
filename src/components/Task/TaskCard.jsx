@@ -1,18 +1,17 @@
 import React, { useState } from "react";
+import { FiCheck, FiEdit, FiTrash, FiXCircle } from "react-icons/fi";
+import { MdArchive } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import {
-  deleteTask,
-  updateTask as updateTaskAction,
-  archiveTask,
-} from "../../redux/tasksSlice";
-import {
+  archiveTask as archiveTaskService,
   deleteTask as deleteTaskService,
   updateTaskStatus,
-  archiveTask as archiveTaskService,
 } from "../../firebase/taskService";
-import { toast } from "react-toastify";
-import { FiEdit, FiTrash, FiCheck, FiXCircle  } from "react-icons/fi";
-import { MdArchive } from "react-icons/md";
+import {
+  archiveTask,
+  deleteTask,
+  updateTask as updateTaskAction,
+} from "../../redux/tasksSlice";
 
 import { auth } from "../../firebase/firebaseConfig";
 
@@ -20,37 +19,43 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
   const dispatch = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
 
+  // Handle task deletion
   const handleDelete = async (id) => {
-    const userId = auth.currentUser.uid;
     try {
-      await deleteTaskService(userId, id);
-      dispatch(deleteTask(id));
-      toast.success("Task deleted successfully!");
+      const userId = auth.currentUser?.uid;
+      if (!userId) throw new Error("User not authenticated");
+
+      await deleteTaskService(userId, id); // Delete task from Firebase
+      dispatch(deleteTask(id)); // Remove task from Redux store
     } catch (error) {
-      toast.error("Failed to delete task.");
+      console.error("Error deleting task:", error);
     }
   };
 
+  // Handle task archiving
   const handleArchive = async (taskId) => {
-    const userId = auth.currentUser.uid;
     try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) throw new Error("User not authenticated");
+
       await archiveTaskService(userId, taskId);
       dispatch(archiveTask(taskId));
-      toast.success("Task archived successfully!");
     } catch (error) {
-      toast.error("Failed to archive task.");
+      console.error("Error archiving task:", error);
     }
   };
 
+  // Mark task as completed
   const handleComplete = async (task) => {
-    const userId = auth.currentUser.uid;
     try {
-      await updateTaskStatus(userId, task.id, "completed");
-      const updatedTask = { ...task, status: "completed" };
-      dispatch(updateTaskAction(updatedTask));
-      toast.success("Task marked as completed!");
+      const userId = auth.currentUser?.uid;
+      if (!userId) throw new Error("User not authenticated");
+
+      await updateTaskStatus(userId, task.id, "completed"); // Update Firebase
+      const updatedTask = { ...task, status: "completed" }; // Create updated task
+      dispatch(updateTaskAction(updatedTask)); // Update Redux store
     } catch (error) {
-      toast.error("Failed to mark task as completed.");
+      console.error("Error completing task:", error);
     }
   };
 
@@ -67,21 +72,18 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
         } relative`}
         onClick={() => setShowDetails(true)}
       >
-        <div className="flex justify-between font-semibold cursor-pointer">
-          <p className="">{task.name}</p>
-          <div className="flex gap-6">
-            {/* {" "} */}
-            {/* <p>Created On: {task.createdDate}</p> */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleArchive(task.id);
-              }}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              <MdArchive size={22} />
-            </button>
-          </div>
+        <div className="flex justify-between items-center">
+          <p className="font-semibold">{task.name}</p>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering modal
+              handleArchive(task.id);
+            }}
+            className="text-blue-600 hover:text-blue-800"
+            aria-label="Archive Task"
+          >
+            <MdArchive size={22} />
+          </button>
         </div>
       </div>
 
@@ -89,12 +91,16 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
       {showDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+            {/* Close Modal Button */}
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
               onClick={() => setShowDetails(false)}
+              aria-label="Close Modal"
             >
               <FiXCircle size={25} />
             </button>
+
+            {/* Task Details */}
             <h3 className="text-2xl font-bold mb-4">{task.name}</h3>
             <p className="mb-2">
               <strong>Description:</strong> {task.description}
@@ -107,17 +113,22 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
             </p>
             <p className="mb-4">
               <strong>Status:</strong>{" "}
-              {task.status === "completed" ? (
-                <span className="text-green-600 font-semibold">Completed</span>
-              ) : task.status === "failed" ? (
-                <span className="text-red-600 font-semibold">Failed</span>
-              ) : (
-                <span className="text-yellow-600 font-semibold">
-                  In Progress
-                </span>
-              )}
+              <span
+                className={`font-semibold ${
+                  task.status === "completed"
+                    ? "text-green-600"
+                    : task.status === "failed"
+                    ? "text-red-600"
+                    : "text-yellow-600"
+                }`}
+              >
+                {task.status}
+              </span>
             </p>
+
+            {/* Action Buttons */}
             <div className="flex space-x-2">
+              {/* Complete Task Button */}
               {task.status !== "completed" && (
                 <button
                   onClick={() => handleComplete(task)}
@@ -127,6 +138,8 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
                   <span>Completed</span>
                 </button>
               )}
+
+              {/* Edit Task Button */}
               <button
                 onClick={() => {
                   setEditingTask(task);
@@ -144,6 +157,7 @@ const TaskCard = ({ task, setEditingTask, setShowEditModal }) => {
                 <span>Edit</span>
               </button>
 
+              {/* Delete Task Button */}
               <button
                 onClick={() => {
                   handleDelete(task.id);

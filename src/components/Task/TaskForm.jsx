@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import { addTask } from "../../firebase/taskService";
-import { useDispatch } from "react-redux";
-import { addTask as addTaskAction } from "../../redux/tasksSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useDispatch } from "react-redux";
 import { auth } from "../../firebase/firebaseConfig";
-import { toast } from "react-toastify";
+import { addTask } from "../../firebase/taskService";
+import { addTask as addTaskAction } from "../../redux/tasksSlice";
 
 const TaskForm = ({ onClose }) => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [customCategory, setCustomCategory] = useState(""); // For custom category
+  const [customCategory, setCustomCategory] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [user] = useAuthState(auth);
 
-  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split("T")[0];
 
   const categories = ["Work", "Personal", "Study", "Health"]; // Predefined categories
 
@@ -35,7 +34,6 @@ const TaskForm = ({ onClose }) => {
         setLoading(true); // Set loading to true when starting the task addition process
         const taskId = await addTask(user.uid, newTask);
         dispatch(addTaskAction({ id: taskId, ...newTask }));
-        toast.success("Task added successfully!");
         onClose();
         setTaskName("");
         setDescription("");
@@ -44,11 +42,9 @@ const TaskForm = ({ onClose }) => {
         setDueDate("");
       } else {
         console.error("User is not authenticated");
-        toast.error("You need to be logged in to add a task.");
       }
     } catch (error) {
       console.error("Error adding task:", error);
-      toast.error("Failed to add task: " + error.message);
     } finally {
       setLoading(false); // Reset loading state after task is added
     }
